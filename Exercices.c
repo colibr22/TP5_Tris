@@ -1,50 +1,78 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-typedef struct{
-    char nom[50];
-    char code[50];
+typedef struct Medicament {
+    char nom[20];
+    char code[20];
     int fabrication;
     int peremption;
     float prix;
     int vendus;
     int stock;
     struct Medicament* suivant;
-}Medicament;
+} Medicament;
+void creeMedicament(Medicament* tableau, int taille){
+    Medicament* temp = tableau;
+    for (int i = 0; i < taille; i++) {
+        printf("Entrez le nom du medicament %d: ", i + 1);
+        scanf("%s", temp->nom);
+        printf("Entrez le code du medicament %d: ", i + 1);
+        scanf("%s", temp->code);
+        printf("Entrez l'annee de fabrication du medicament %d: ", i + 1);
+        scanf("%d", &temp->fabrication);
+        printf("Entrez l'annee de peremption du medicament %d: ", i + 1);
+        scanf("%d", &temp->peremption);
+        printf("Entrez le prix du medicament %d: ", i + 1);
+        scanf("%f", &temp->prix);
+        printf("Entrez le nombre de medicaments vendus %d: ", i + 1);
+        scanf("%d", &temp->vendus);
+        printf("Entrez le stock de medicaments %d: ", i + 1);
+        scanf("%d", &temp->stock);
 
-void creeMedicament(Medicament* tableau) {
-    Medicament* nouveau = malloc(sizeof(Medicament));
-    if (nouveau == NULL) {
-        return;
+        if (i < taille - 1) {
+            temp->suivant = malloc(sizeof(Medicament));
+            temp = temp->suivant;
+            temp->suivant = NULL;
+        }
     }
-    
-    printf("Entrez le nom du medicament : ");
-    scanf("%s", nouveau->nom);
-    printf("Entrez le code du medicament : ");
-    scanf("%s", nouveau->code);
-    printf("Entrez l'annee de fabrication : ");
-    scanf("%d", &nouveau->fabrication);
-    printf("Entrez l'annee de peremption : ");
-    scanf("%d", &nouveau->peremption);
-    printf("Entrez le prix : ");
-    scanf("%f", &nouveau->prix);
-    printf("Entrez le nombre de medicaments vendus : ");
-    scanf("%d", &nouveau->vendus);
-    printf("Entrez le stock disponible : ");
-    scanf("%d", &nouveau->stock);
-    nouveau->suivant = tableau->suivant;
-    tableau->suivant = nouveau;
 }
 
-void trisBulle(Medicament* tableau){
-
+void trisBulle(Medicament* tableau, int taille) {
+    Medicament* temp1 = tableau;
+    Medicament* temp2 = NULL;
+    for (int i = 0; i < taille - 1; i++) {
+        temp2 = tableau;
+        for (int j = 0; j < taille - i - 1; j++) {
+            if (temp2->prix > temp2->suivant->prix) {
+                Medicament temp = *temp2;
+                *temp2 = *(temp2->suivant);
+                *(temp2->suivant) = temp;
+            }
+            temp2 = temp2->suivant;
+        }
+    }
 }
 
+void afficherTableau(Medicament* tableau, int taille) {
+    Medicament* temp = tableau;
+    for (int i = 0; i < taille; i++) {
+        printf("Nom: %s, Code: %s, Fabrication: %d, Peremption: %d, Prix: %.2f, Vendus: %d, Stock: %d\n",
+               temp->nom, temp->code, temp->fabrication, temp->peremption,
+               temp->prix, temp->vendus, temp->stock);
+        temp = temp->suivant;
+    }
+}
 
 int main(){
-    Medicament* tableau = malloc(sizeof(Medicament));
-    tableau->suivant = NULL;
-    creeMedicament(tableau);
+    int taille = 3;
+    Medicament* tableau = malloc(taille * sizeof(Medicament));
+    if (tableau == NULL) {
+        return 1;
+    }
+    creeMedicament(tableau, taille);
+    trisBulle(tableau, taille);
+    
     free(tableau);
     return 0;
 }
