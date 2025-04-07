@@ -44,7 +44,7 @@ void trisBulle(Medicament* tableau, int taille) {
     for (int i = 0; i < taille - 1; i++) {
         temp2 = tableau;
         for (int j = 0; j < taille - i - 1; j++) {
-            if (temp2->prix > temp2->suivant->prix) {
+            if (temp2->peremption > temp2->suivant->peremption) {
                 Medicament temp = *temp2;
                 *temp2 = *(temp2->suivant);
                 *(temp2->suivant) = temp;
