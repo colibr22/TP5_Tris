@@ -28,7 +28,7 @@ void creeMedicament(Medicament* tableau, int taille){
         printf("Entrez le nombre de medicaments vendus %d: ", i + 1);
         scanf("%d", &temp->vendus);
         printf("Entrez le stock de medicaments %d: ", i + 1);
-        scanf("%d", &temp->stock);
+        scanf("%d \n", &temp->stock);
 
         if (i < taille - 1) {
             temp->suivant = malloc(sizeof(Medicament));
@@ -39,17 +39,17 @@ void creeMedicament(Medicament* tableau, int taille){
 }
 
 void trisBulle(Medicament* tableau, int taille) {
-    Medicament* temp1 = tableau;
-    Medicament* temp2 = NULL;
+    Medicament* temp = tableau;
+    Medicament* temp1 = NULL;
     for (int i = 0; i < taille - 1; i++) {
-        temp2 = tableau;
+        temp1 = tableau;
         for (int j = 0; j < taille - i - 1; j++) {
-            if (temp2->peremption > temp2->suivant->peremption) {
-                Medicament temp = *temp2;
-                *temp2 = *(temp2->suivant);
-                *(temp2->suivant) = temp;
+            if (temp1->peremption > temp1->suivant->peremption) {
+                Medicament temp = *temp1;
+                *temp1 = *(temp1->suivant);
+                *(temp1->suivant) = temp;
             }
-            temp2 = temp2->suivant;
+            temp1 = temp1->suivant;
         }
     }
 }
@@ -65,13 +65,14 @@ void afficherTableau(Medicament* tableau, int taille) {
 }
 
 int main(){
-    int taille = 3;
+    int taille = 2;
     Medicament* tableau = malloc(taille * sizeof(Medicament));
     if (tableau == NULL) {
         return 1;
     }
     creeMedicament(tableau, taille);
     trisBulle(tableau, taille);
+    afficherTableau(tableau, taille);
     
     free(tableau);
     return 0;
