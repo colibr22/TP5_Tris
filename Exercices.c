@@ -114,10 +114,16 @@ int main() {
         printf("\nMedicament #%d\n", i + 1);
         saisirMedicament(&tab[i]);
     }*/
+    trierParDatePeremption(tab, n);
+
+    printf("\n=== Medicaments tries par date de peremption ===\n");
+    for (i = 0; i < n; i++) {
+        afficherMedicamentPeremption(tab[i]);
+    }
 
     char nomRecherche[50];
-    printf("Entrez le nom du medicament a rechercher : ");
-    scanf("%s", nomRecherche);
+    printf("\nEntrez le nom du medicament a rechercher : ");
+    scanf("%s \n", nomRecherche);
 
     int pos = rechercheDichotomique(tab, n, nomRecherche);
 
@@ -126,16 +132,25 @@ int main() {
     } else {
         printf("Le medicament \"%s\" n'est pas dans le tableau.\n", nomRecherche);
     }
-    
-    trierParDatePeremption(tab, n);
 
-    printf("\n=== Medicaments tries par date de peremption ===\n");
-    for (i = 0; i < n; i++) {
-        afficherMedicamentPeremption(tab[i]);
-    }
 
     trierParPrix(tab, n);
     afficherMedicamentPrix(tab[0]);
+
+    int totalVendus = 0;
+    int totalStock = 0;
+
+    for (int i = 0; i < n; i++) {
+        totalVendus += tab[i].vendus;
+        totalStock += tab[i].stock;
+    }
+
+    float taux = 0.0;
+    if ((totalVendus + totalStock) > 0) {
+        taux = (float)totalVendus / (totalVendus + totalStock) * 100;
+    }
+
+    printf("\nTaux de medicaments vendus : %.2f %%\n", taux);
 
     return 0;
 }
