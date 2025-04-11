@@ -3,77 +3,76 @@
 #include <string.h>
 
 typedef struct Medicament {
-    char nom[20];
+    char nom[50];
     char code[20];
     int fabrication;
     int peremption;
     float prix;
     int vendus;
     int stock;
-    struct Medicament* suivant;
 } Medicament;
-void creeMedicament(Medicament* tableau, int taille){
-    Medicament* temp = tableau;
-    for (int i = 0; i < taille; i++) {
-        printf("Entrez le nom du medicament %d: ", i + 1);
-        scanf("%s", temp->nom);
-        printf("Entrez le code du medicament %d: ", i + 1);
-        scanf("%s", temp->code);
-        printf("Entrez l'annee de fabrication du medicament %d: ", i + 1);
-        scanf("%d", &temp->fabrication);
-        printf("Entrez l'annee de peremption du medicament %d: ", i + 1);
-        scanf("%d", &temp->peremption);
-        printf("Entrez le prix du medicament %d: ", i + 1);
-        scanf("%f", &temp->prix);
-        printf("Entrez le nombre de medicaments vendus %d: ", i + 1);
-        scanf("%d", &temp->vendus);
-        printf("Entrez le stock de medicaments %d: ", i + 1);
-        scanf("%d \n", &temp->stock);
 
-        if (i < taille - 1) {
-            temp->suivant = malloc(sizeof(Medicament));
-            temp = temp->suivant;
-            temp->suivant = NULL;
-        }
-    }
+void saisirMedicament(Medicament *med) {
+    printf("Nom : ");
+    scanf("%s", med->nom);
+
+    printf("Code medicament : ");
+    scanf("%s", med->code);
+
+    printf("Date de fabrication (aaaammjj) : ");
+    scanf("%d", &med->fabrication);
+
+    printf("Date de peremption (aaaammjj) : ");
+    scanf("%d", &med->peremption);
+
+    printf("Prix unitaire ($) : ");
+    scanf("%f", &med->prix);
+
+    printf("Nombre d'unites vendues : ");
+    scanf("%d", &med->vendus);
+
+    printf("Nombre restant en stock : ");
+    scanf("%d", &med->stock);
 }
 
-void trisBulle(Medicament* tableau, int taille) {
-    Medicament* temp = tableau;
-    Medicament* temp1 = NULL;
-    for (int i = 0; i < taille - 1; i++) {
-        temp1 = tableau;
-        for (int j = 0; j < taille - i - 1; j++) {
-            if (temp1->peremption > temp1->suivant->peremption) {
-                Medicament temp = *temp1;
-                *temp1 = *(temp1->suivant);
-                *(temp1->suivant) = temp;
+void trierParDatePeremption(Medicament tab[], int n) {
+    int i, j;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (tab[j].peremption, tab[j + 1].peremption > 0) {
+                Medicament temp = tab[j];
+                tab[j] = tab[j + 1];
+                tab[j + 1] = temp;
             }
-            temp1 = temp1->suivant;
         }
     }
 }
 
-void afficherTableau(Medicament* tableau, int taille) {
-    Medicament* temp = tableau;
-    for (int i = 0; i < taille; i++) {
-        printf("Nom: %s, Code: %s, Fabrication: %d, Peremption: %d, Prix: %.2f, Vendus: %d, Stock: %d\n",
-               temp->nom, temp->code, temp->fabrication, temp->peremption,
-               temp->prix, temp->vendus, temp->stock);
-        temp = temp->suivant;
-    }
+
+
+void afficherMedicament(Medicament med) {
+    printf("%s (Expire le %d )\n", med.nom, med.peremption);
 }
 
-int main(){
-    int taille = 2;
-    Medicament* tableau = malloc(taille * sizeof(Medicament));
-    if (tableau == NULL) {
-        return 1;
-    }
-    creeMedicament(tableau, taille);
-    trisBulle(tableau, taille);
-    afficherTableau(tableau, taille);
+int main() {
+    int n;
+    printf("Combien de medicaments voulez-vous saisir ? : ");
+    scanf("%d", &n);
+    Medicament tab[n];
+    int i;
     
-    free(tableau);
+    printf("=== Saisie des medicaments ===\n");
+    for (i = 0; i < n; i++) {
+        printf("\nMedicament #%d\n", i + 1);
+        saisirMedicament(&tab[i]);
+    }
+
+    trierParDatePeremption(tab, n);
+
+    printf("\n=== Medicaments tries par date de peremption ===\n");
+    for (i = 0; i < n; i++) {
+        afficherMedicament(tab[i]);
+    }
+
     return 0;
 }
