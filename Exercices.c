@@ -10,6 +10,7 @@ typedef struct Medicament {
     float prix;
     int vendus;
     int stock;
+    struct Medicament *suivant;
 } Medicament;
 
 /*
@@ -35,22 +36,12 @@ void saisirMedicament(Medicament *med) {
     printf("Nombre restant en stock : ");
     scanf("%d", &med->stock);
 }*/
-
-void trierParDatePeremption(Medicament tab[], int n) {
-    int i, j;
-    for (i = 0; i < n - 1; i++) {
-        for (j = 0; j < n - i - 1; j++) {
-            if (tab[j].peremption, tab[j + 1].peremption) {
-                Medicament temp = tab[j];
-                tab[j] = tab[j + 1];
-                tab[j + 1] = temp;
-            }
-        }
-    }
-}
-
-void afficherMedicamentPeremption(Medicament med) {
-    printf("%s (Expire le %d )\n", med.nom, med.peremption);
+Medicament* creerMedicament(char* nom, char* code) {
+    Medicament* m = (Medicament*)malloc(sizeof(Medicament));
+    strcpy(m->nom, nom);
+    strcpy(m->code, code);
+    m->suivant = NULL;
+    return m;
 }
 
 int rechercheDichotomique(Medicament tab[], int n, char nomRecherche[]) {
@@ -76,6 +67,19 @@ int rechercheDichotomique(Medicament tab[], int n, char nomRecherche[]) {
     return -1;
 }
 
+void trierParDatePeremption(Medicament tab[], int n) {
+    int i, j;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (tab[j].peremption, tab[j + 1].peremption) {
+                Medicament temp = tab[j];
+                tab[j] = tab[j + 1];
+                tab[j + 1] = temp;
+            }
+        }
+    }
+}
+
 void trierParPrix(Medicament tab[], int n) {
     int i, j;
     Medicament temp;
@@ -90,8 +94,52 @@ void trierParPrix(Medicament tab[], int n) {
     }
 }
 
+void trierListeParCode(Medicament* head) {
+    int permute;
+    Medicament* p;
+    Medicament* dernier = NULL;
+
+    if (head == NULL) return;
+
+    do {
+        permute = 0;
+        p = head;
+
+        while (p->suivant != dernier) {
+            if (strcmp(p->code, p->suivant->code) > 0) {
+                // Échange des données des deux nœuds
+                Medicament temp = *p;
+                *p = *(p->suivant);
+                *(p->suivant) = temp;
+
+                // On remet les pointeurs .suivant à leur place (échangés aussi !)
+                Medicament* tmpNext = p->suivant->suivant;
+                p->suivant->suivant = p;
+                p->suivant = tmpNext;
+
+                permute = 1;
+            }
+            p = p->suivant;
+        }
+        dernier = p;
+    } while (permute);
+}
+
 void afficherMedicamentPrix(Medicament med) {
     printf("%s (Prix: %.2f)\n", med.nom, med.prix);
+}
+
+void afficherMedicamentPeremption(Medicament med) {
+    printf("%s (Expire le %d )\n", med.nom, med.peremption);
+}
+
+void afficherListe(Medicament* head) {
+    Medicament* p = head;
+    printf("\n--- Liste triée ---\n");
+    while (p != NULL) {
+        printf("Code: %s | Nom: %s\n", p->code, p->nom);
+        p = p->suivant;
+    }
 }
 
 int main() {
@@ -107,6 +155,13 @@ int main() {
         { "aspirine", "MED006", 20221212, 20261212, 2.00, 150, 100 },
         
     };
+
+    Medicament* m1 = creerMedicament("doliprane", "MED003");
+    Medicament* m2 = creerMedicament("ampicilline", "MED004");
+    Medicament* m3 = creerMedicament("benzylpenicilline", "MED005");
+
+    m1->suivant = m2;
+    m2->suivant = m3;
     
     /*
     printf("=== Saisie des medicaments ===\n");
@@ -133,7 +188,7 @@ int main() {
         printf("Le medicament \"%s\" n'est pas dans le tableau.\n", nomRecherche);
     }
 
-
+    printf("\n=== Medicaments tries par prix ===\n");
     trierParPrix(tab, n);
     afficherMedicamentPrix(tab[0]);
 
@@ -151,6 +206,12 @@ int main() {
     }
 
     printf("\nTaux de medicaments vendus : %.2f %%\n", taux);
+
+    printf("--- Liste avant tri ---\n");
+    afficherListe(m1);
+    printf("\n--- Liste apres tri ---\n");
+    trierListeParCode(m1);
+    afficherListe(m1);
 
     return 0;
 }
