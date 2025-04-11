@@ -36,6 +36,19 @@ void quicksort_moyenne(Etudiant tab[], int debut, int fin) {
     }
 }
 
+void tri_insertion_alphabetique(Etudiant tab[], int n) {
+    for (int i = 1; i < n; i++) {
+        Etudiant x = tab[i];
+        int j = i - 1;
+
+        while (j >= 0 && strcmp(tab[j].nom, x.nom) > 0) {
+            tab[j + 1] = tab[j];
+            j--;
+        }
+        tab[j + 1] = x;
+    }
+}
+
 void afficher_etudiants(Etudiant tab[], int n) {
     for (int i = 0; i < n; i++) {
         printf("Nom: %s, Prenom: %s, Matricule: %s, Moyenne: %.2f\n",
@@ -56,6 +69,10 @@ int main() {
 
     quicksort_moyenne(tab, 0, n-1);
     printf("Tri par ordre de moyenne :\n");
+    afficher_etudiants(tab, n);
+
+    tri_insertion_alphabetique(tab, n);
+    printf("\nTri alphabetique par nom :\n");
     afficher_etudiants(tab, n);
 
     return 0;
