@@ -12,6 +12,7 @@ typedef struct Medicament {
     int stock;
 } Medicament;
 
+/*
 void saisirMedicament(Medicament *med) {
     printf("Nom : ");
     scanf("%s", med->nom);
@@ -33,13 +34,13 @@ void saisirMedicament(Medicament *med) {
 
     printf("Nombre restant en stock : ");
     scanf("%d", &med->stock);
-}
+}*/
 
 void trierParDatePeremption(Medicament tab[], int n) {
     int i, j;
     for (i = 0; i < n - 1; i++) {
         for (j = 0; j < n - i - 1; j++) {
-            if (tab[j].peremption, tab[j + 1].peremption > 0) {
+            if (tab[j].peremption, tab[j + 1].peremption) {
                 Medicament temp = tab[j];
                 tab[j] = tab[j + 1];
                 tab[j + 1] = temp;
@@ -48,7 +49,7 @@ void trierParDatePeremption(Medicament tab[], int n) {
     }
 }
 
-void afficherMedicament(Medicament med) {
+void afficherMedicamentPeremption(Medicament med) {
     printf("%s (Expire le %d )\n", med.nom, med.peremption);
 }
 
@@ -75,28 +76,47 @@ int rechercheDichotomique(Medicament tab[], int n, char nomRecherche[]) {
     return -1;
 }
 
+void trierParPrix(Medicament tab[], int n) {
+    int i, j;
+    Medicament temp;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (tab[j].prix < tab[j + 1].prix) {
+                temp = tab[j];
+                tab[j] = tab[j + 1];
+                tab[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void afficherMedicamentPrix(Medicament med) {
+    printf("%s (Prix: %.2f)\n", med.nom, med.prix);
+}
+
 int main() {
-    int n;
-    printf("Combien de medicaments voulez-vous saisir ? : ");
-    scanf("%d", &n);
-    Medicament tab[n];
+    int n = 5;
+    //printf("Combien de medicaments voulez-vous saisir ? : ");
+    //scanf("%d", &n);
     int i;
+    Medicament tab[5] = {
+        { "paracetamol", "MED001", 20220101, 20250101, 3.50, 100, 50 },
+        { "ibuprofene", "MED002", 20220303, 20250303, 2.50, 200, 150 },
+        { "antibiotique", "MED004", 20220101, 20252121, 4.00, 80, 60 },
+        { "vitamine C", "MED005", 20230505, 20260505, 1.80, 300, 250 },
+        { "aspirine", "MED006", 20221212, 20261212, 2.00, 150, 100 },
+        
+    };
     
+    /*
     printf("=== Saisie des medicaments ===\n");
     for (i = 0; i < n; i++) {
         printf("\nMedicament #%d\n", i + 1);
         saisirMedicament(&tab[i]);
-    }
-
-    trierParDatePeremption(tab, n);
-
-    printf("\n=== Medicaments tries par date de peremption ===\n");
-    for (i = 0; i < n; i++) {
-        afficherMedicament(tab[i]);
-    }
+    }*/
 
     char nomRecherche[50];
-    printf("Entrez le nom du médicament à rechercher : ");
+    printf("Entrez le nom du medicament a rechercher : ");
     scanf("%s", nomRecherche);
 
     int pos = rechercheDichotomique(tab, n, nomRecherche);
@@ -106,6 +126,16 @@ int main() {
     } else {
         printf("Le medicament \"%s\" n'est pas dans le tableau.\n", nomRecherche);
     }
+    
+    trierParDatePeremption(tab, n);
+
+    printf("\n=== Medicaments tries par date de peremption ===\n");
+    for (i = 0; i < n; i++) {
+        afficherMedicamentPeremption(tab[i]);
+    }
+
+    trierParPrix(tab, n);
+    afficherMedicamentPrix(tab[0]);
 
     return 0;
 }
